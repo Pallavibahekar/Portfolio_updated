@@ -85,7 +85,9 @@ export default function Navbar() {
             </button>
           ))}
           <motion.a
-            href="mailto:bahekarpallavi883@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=bahekarpallavi883@gmail.com&su=Hiring Opportunity"
+            target="_blank"
+            rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"
@@ -123,7 +125,9 @@ export default function Navbar() {
                 </button>
               ))}
               <a
-                href="mailto:bahekarpallavi883@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=bahekarpallavi883@gmail.com&su=Hiring Opportunity"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-fit px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold"
               >
                 Hire Me
