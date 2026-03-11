@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background-color: #030712;
+    color: #f3f4f6;
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(135deg, #a78bfa, #f472b6, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Animated gradient border on hover */
+  .card-glass {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .card-glass:hover {
+    border-color: rgba(167, 139, 250, 0.35);
+    box-shadow: 0 0 30px rgba(167, 139, 250, 0.08), inset 0 0 30px rgba(167, 139, 250, 0.03);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 30px rgba(167, 139, 250, 0.15);
+  }
+
+  /* Shimmer animation */
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+    animation: shimmer 2.5s infinite;
+  }
+
+  /* Gradient text animated */
+  .gradient-text-animated {
+    background: linear-gradient(135deg, #a78bfa, #f472b6, #22d3ee, #a78bfa);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 4s ease infinite;
+  }
+  @keyframes gradient-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Floating animation for decorative elements */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-12px); }
+  }
+  .float { animation: float 4s ease-in-out infinite; }
+}
