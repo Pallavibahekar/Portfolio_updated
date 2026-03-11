@@ -3,6 +3,7 @@ import { FiGithub, FiLinkedin, FiMail, FiDownload } from "react-icons/fi";
 import { SiLeetcode, SiCodechef } from "react-icons/si";
 import { personalInfo } from "../data/portfolioData";
 import { useEffect, useState } from "react";
+import meImage from "../assets/me.jpeg";
 
 // Floating particle
 function Particle({ x, y, size, color, duration, delay }) {
@@ -123,7 +124,7 @@ export default function Hero() {
               <div className="w-full h-full rounded-full bg-gray-950" />
             </motion.div>
             <img
-              src="/src/assets/me.jpeg"
+              src={meImage}
               alt="Pallavi Bahekar"
               className="absolute inset-[4px] w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full object-cover object-top"
               onError={(e) => { e.target.style.display="none"; }}
