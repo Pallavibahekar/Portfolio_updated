@@ -212,3 +212,5 @@ This project is open source and available under the [MIT License](LICENSE).
   <p>Made with ❤️ by <strong>Pallavi Bahekar</strong></p>
   <p>⭐ Star this repo if you like it!</p>
 </div>
+# Portfolio_updated
+Personal portfolio website showcasing my projects, experience, and achievements built with React, Vite, and Tailwind CSS.
