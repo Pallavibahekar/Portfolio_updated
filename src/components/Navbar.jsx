@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+import { personalInfo } from "../data/portfolioData";
+
+const HIRE_MAILTO = `https://mail.google.com/mail/?view=cm&fs=1&to=${personalInfo.email}&su=Hiring Opportunity`;
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -85,7 +88,7 @@ export default function Navbar() {
             </button>
           ))}
           <motion.a
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=bahekarpallavi883@gmail.com&su=Hiring Opportunity"
+            href={HIRE_MAILTO}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
@@ -125,7 +128,7 @@ export default function Navbar() {
                 </button>
               ))}
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=bahekarpallavi883@gmail.com&su=Hiring Opportunity"
+                href={HIRE_MAILTO}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-fit px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold"

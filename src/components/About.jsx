@@ -4,17 +4,17 @@ import { skills, education } from "../data/portfolioData";
 
 const skillColors = {
   languages: "from-purple-500 to-violet-500",
-  frameworks: "from-pink-500 to-rose-500",
-  tools: "from-cyan-500 to-blue-500",
-  softSkills: "from-green-500 to-teal-500",
+  backend: "from-pink-500 to-rose-500",
+  databases: "from-cyan-500 to-blue-500",
+  concepts: "from-green-500 to-teal-500",
   interests: "from-orange-500 to-yellow-500",
 };
 
 const skillLabels = {
   languages: "Languages",
-  frameworks: "Frameworks & Libraries",
-  tools: "Tools & Platforms",
-  softSkills: "Soft Skills",
+  backend: "Backend & Frameworks",
+  databases: "Databases & Cloud",
+  concepts: "Core Concepts",
   interests: "Interests",
 };
 
@@ -71,15 +71,16 @@ export default function About() {
               <span className="text-2xl">👩‍💻</span> Who I Am
             </h3>
             <p className="text-gray-400 leading-relaxed mb-4">
-              I'm a passionate Software Development Engineer from IIIT Lucknow with a CGPA of 8.7.
-              I've had the privilege of interning at <span className="text-blue-400 font-semibold">Google</span> and{" "}
-              <span className="text-orange-400 font-semibold">Amazon</span>, and I'm currently building
-              impactful products at <span className="text-green-400 font-semibold">PropertyGuru</span>.
+              I'm a Software Development Engineer at <span className="text-green-400 font-semibold">PropertyGuru</span>,
+              building high-throughput data services and LLM-powered developer tooling. I previously interned at{" "}
+              <span className="text-blue-400 font-semibold">Google</span> and{" "}
+              <span className="text-orange-400 font-semibold">Amazon</span>, and graduated from IIIT Lucknow with a
+              CGPA of 8.7.
             </p>
             <p className="text-gray-400 leading-relaxed">
-              Beyond work, I'm a competitive coder (LeetCode Knight, CodeChef 3★),
-              a Harvard WEAmplify Scholar, and a GHC Scholar. I love leveraging AI and ML
-              to build smarter solutions.
+              I enjoy backend engineering, distributed systems, and applied AI — from Elasticsearch migrations at
+              scale to multi-agent systems with LangGraph. Outside of work I'm a competitive coder
+              (LeetCode Knight, CodeChef 3★), a Harvard WEAmplify Scholar, and a GHC Scholar.
             </p>
           </motion.div>
 

@@ -3,13 +3,14 @@ import { motion } from "framer-motion";
 import { useInView } from "../hooks/useInView";
 import { FiMail, FiLinkedin, FiGithub, FiSend } from "react-icons/fi";
 import { SiLeetcode, SiCodechef } from "react-icons/si";
+import { personalInfo } from "../data/portfolioData";
 
 const contactLinks = [
-  { icon: <FiMail size={20} />, label: "Email", value: "bahekarpallavi883@gmail.com", href: "mailto:bahekarpallavi883@gmail.com", color: "from-red-500 to-orange-500" },
-  { icon: <FiLinkedin size={20} />, label: "LinkedIn", value: "pallavibahekar", href: "https://linkedin.com/in/pallavibahekar", color: "from-blue-500 to-cyan-500" },
-  { icon: <FiGithub size={20} />, label: "GitHub", value: "Pallavibahekar", href: "https://github.com/Pallavibahekar", color: "from-gray-500 to-gray-700" },
-  { icon: <SiLeetcode size={20} />, label: "LeetCode", value: "pal_2103", href: "https://leetcode.com/pal_2103", color: "from-yellow-500 to-orange-500" },
-  { icon: <SiCodechef size={20} />, label: "CodeChef", value: "pal_krish", href: "https://www.codechef.com/users/pal_krish", color: "from-orange-600 to-red-600" },
+  { icon: <FiMail size={20} />, label: "Email", value: personalInfo.email, href: `mailto:${personalInfo.email}`, color: "from-red-500 to-orange-500" },
+  { icon: <FiLinkedin size={20} />, label: "LinkedIn", value: "pallavi-bahekar-9b904922a", href: personalInfo.linkedin, color: "from-blue-500 to-cyan-500" },
+  { icon: <FiGithub size={20} />, label: "GitHub", value: "Pallavibahekar", href: personalInfo.github, color: "from-gray-500 to-gray-700" },
+  { icon: <SiLeetcode size={20} />, label: "LeetCode", value: "pal_2103", href: personalInfo.leetcode, color: "from-yellow-500 to-orange-500" },
+  { icon: <SiCodechef size={20} />, label: "CodeChef", value: "pal_krish", href: personalInfo.codechef, color: "from-orange-600 to-red-600" },
 ];
 
 export default function Contact() {
@@ -21,7 +22,7 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const to = "bahekarpallavi883@gmail.com";
+    const to = personalInfo.email;
     const subject = encodeURIComponent(`Portfolio Contact from ${form.name}`);
     const body = encodeURIComponent(`${form.message}\n\nFrom: ${form.name}\nEmail: ${form.email}`);
     window.open(

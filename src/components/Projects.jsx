@@ -82,20 +82,57 @@ function TimewisePreview() {
   );
 }
 
-// ── Portfolio: Live iframe screenshot ────────────────────────────────────────
+// ── Terminal-style preview for projects without screenshots ──────────────────
+function MockPreview({ label, accent, rows }) {
+  return (
+    <div className="relative h-64 overflow-hidden rounded-t-2xl bg-gradient-to-br from-gray-900 via-gray-950 to-black">
+      {/* Grid backdrop */}
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      <div className="absolute inset-0 p-6 pt-14 font-mono text-[11px] leading-relaxed">
+        <div className="flex items-center gap-1.5 mb-3">
+          <span className="w-2 h-2 rounded-full bg-red-500/60" />
+          <span className="w-2 h-2 rounded-full bg-yellow-500/60" />
+          <span className="w-2 h-2 rounded-full bg-green-500/60" />
+          <span className="ml-2 text-[9px] text-gray-600">~/project</span>
+        </div>
+        <div className="space-y-1.5">
+          {rows.map((row, i) => (
+            <div key={i} className="flex gap-2">
+              <span className="text-gray-700 select-none">▸</span>
+              <span className={i === rows.length - 1 ? "text-gray-300" : "text-gray-500"}>{row}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-950 to-transparent pointer-events-none" />
+
+      {/* Badge */}
+      <div className={`absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm border ${accent.border} ${accent.text} text-[9px] font-semibold z-10`}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+// ── Portfolio: static screenshot preview ─────────────────────────────────────
 function PortfolioPreview() {
   return (
     <div className="relative h-64 overflow-hidden rounded-t-2xl bg-gray-950 group/preview">
-      {/* Scaled-down live iframe of the portfolio itself */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <iframe
-          src="/"
-          title="Portfolio Preview"
-          className="w-[200%] h-[200%] origin-top-left scale-50 border-none"
-          scrolling="no"
-          tabIndex={-1}
-        />
-      </div>
+      <img
+        src="/previews/portfolio.png"
+        alt="Portfolio preview"
+        className="w-full h-full object-cover object-top"
+        onError={(e) => { e.target.style.display = "none"; }}
+      />
       {/* Gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-950 to-transparent pointer-events-none" />
       {/* Top fade */}
@@ -115,6 +152,32 @@ function PortfolioPreview() {
 
 // ── Preview map by project title ──────────────────────────────────────────────
 const PREVIEWS = {
+  "Oracle-MAS — Multi-Agent System": (
+    <MockPreview
+      label="LangGraph + MCP"
+      accent={{ border: "border-violet-400/30", text: "text-violet-300" }}
+      rows={[
+        "router → classify query intent",
+        "tool: qdrant.search(collection=\"docs\")",
+        "tool: tavily.search(query)",
+        "model: bedrock/llama-4-scout",
+        "✓ grounded answer returned",
+      ]}
+    />
+  ),
+  "Dev-Link-Hub": (
+    <MockPreview
+      label="React + Node + MongoDB"
+      accent={{ border: "border-emerald-400/30", text: "text-emerald-300" }}
+      rows={[
+        "POST /api/auth/login → jwt.sign()",
+        "POST /api/links → autoTag(title, desc, url)",
+        "GET  /api/links?q=react&tag=frontend",
+        "200 OK · 12 resources",
+        "✓ tags written to MongoDB",
+      ]}
+    />
+  ),
   "TimeWise — Smart Grocery App": <TimewisePreview />,
   "AI-Powered Portfolio": <PortfolioPreview />,
 };
@@ -146,7 +209,7 @@ function PreviewModal({ title, onClose }) {
         <div className="overflow-hidden rounded-t-2xl">{PREVIEWS[title]}</div>
         <div className="bg-gray-950 px-5 py-3 border-t border-white/8">
           <p className="text-white font-semibold text-sm">{title}</p>
-          <p className="text-gray-500 text-xs mt-0.5">App Preview Mockup</p>
+          <p className="text-gray-500 text-xs mt-0.5">Project preview</p>
         </div>
       </motion.div>
     </motion.div>
@@ -239,9 +302,9 @@ function ProjectCard({ proj, index, inView }) {
             >
               <div className="flex items-center gap-2">
                 <FiCpu size={15} />
-                <span>AI Project Walkthrough</span>
+                <span>Project Walkthrough</span>
                 <span className="text-xs font-normal text-gray-600 group-hover/btn:text-gray-500">
-                  — how AI assisted this
+                  — how it works
                 </span>
               </div>
               <motion.span animate={{ rotate: showWalkthrough ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -263,7 +326,9 @@ function ProjectCard({ proj, index, inView }) {
                       <div className="flex items-center justify-between px-4 py-2 bg-white/4 border-b border-white/8">
                         <div className="flex items-center gap-2">
                           <FiCode size={13} className="text-purple-400" />
-                          <span className="text-xs font-mono text-gray-400">code-snippet.js</span>
+                          <span className="text-xs font-mono text-gray-400">
+                            {proj.aiSnippet.language === "python" ? "orchestrator.py" : proj.aiSnippet.language === "javascript" ? "code-snippet.js" : `code-snippet.${proj.aiSnippet.language || "js"}`}
+                          </span>
                         </div>
                         <div className="flex gap-1.5">
                           <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
@@ -272,7 +337,7 @@ function ProjectCard({ proj, index, inView }) {
                         </div>
                       </div>
                       <SyntaxHighlighter
-                        language="javascript"
+                        language={proj.aiSnippet.language || "javascript"}
                         style={vscDarkPlus}
                         customStyle={{ margin: 0, background: "rgba(0,0,0,0.4)", fontSize: "12px", padding: "1rem" }}
                       >
@@ -344,7 +409,7 @@ export default function Projects() {
           className="text-center text-gray-600 text-xs mb-12 flex items-center justify-center gap-2"
         >
           <FiCpu size={12} className="text-cyan-500" />
-          Click <span className="text-cyan-400 font-medium">AI Project Walkthrough</span> on each card · Click preview to expand
+          Click <span className="text-cyan-400 font-medium">Project Walkthrough</span> on each card · Click preview to expand
         </motion.p>
 
         <div className="grid md:grid-cols-2 gap-8">

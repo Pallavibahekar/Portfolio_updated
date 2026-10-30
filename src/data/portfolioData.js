@@ -1,9 +1,9 @@
 export const personalInfo = {
   name: "Pallavi Bahekar",
   role: "Software Development Engineer",
-  tagline: "AI & Full-Stack Developer | Problem Solver | Competitive Coder",
-  email: "bahekarpallavi883@gmail.com",
-  linkedin: "https://linkedin.com/in/pallavibahekar",
+  tagline: "Backend & AI Engineer | Distributed Systems | Problem Solver",
+  email: "pallavibahekar34@gmail.com",
+  linkedin: "https://www.linkedin.com/in/pallavi-bahekar-9b904922a/",
   github: "https://github.com/Pallavibahekar",
   mobile: "+91-957-9501-024",
   leetcode: "https://leetcode.com/pal_2103",
@@ -42,31 +42,28 @@ export const education = [
 ];
 
 export const skills = {
-  languages: ["Java", "Python", "C", "C++", "JavaScript", "SQL"],
-  frameworks: ["ReactJS", "NodeJS", "NestJS", "Bootstrap", "Flutter"],
-  tools: [
-    "Git",
+  languages: ["Java", "C++", "C", "JavaScript", "SQL", "Python"],
+  backend: ["Node.js", "React", "gRPC", "REST APIs", "LangGraph", "FastMCP"],
+  databases: [
+    "Elasticsearch",
     "MySQL",
     "MongoDB",
-    "AWS",
-    "Kibana",
-    "gRPC",
     "Spanner",
-    "Firebase",
-    "Unix",
+    "Qdrant",
+    "AWS Bedrock",
+    "CloudWatch",
   ],
-  softSkills: [
-    "Leadership",
-    "Event Management",
-    "Writing",
-    "Public Speaking",
-    "Time Management",
+  concepts: [
+    "Data Structures & Algorithms",
+    "DBMS",
+    "OOP",
+    "Computer Networks",
   ],
   interests: [
-    "Web Development",
-    "Competitive Coding",
-    "Machine Learning",
-    "NLP",
+    "Distributed Systems",
+    "LLM Applications",
+    "Backend Engineering",
+    "Competitive Programming",
   ],
 };
 
@@ -81,10 +78,13 @@ export const experience = [
     logo: "/pg-logo.png",
     logoBg: "bg-white",
     logoSize: "w-10 h-10",
-    tech: ["Kibana", "NestJS", "AWS"],
+    tech: ["Node.js", "Elasticsearch", "AWS", "LLM"],
     points: [
-      "Led migration of the IPP v5 listing detail endpoint from mapper-based to native v5 index, improving data accuracy and performance via parallel runs and comprehensive validation.",
-      "Implemented optimized cron jobs for automated shortlist maintenance, including state-based cleanup and timed removal of expired listings older than 60 days.",
+      "Contributed to a shared, cached profile service that unified agent-profile access across marketplace products, simplifying integrations and maintenance while reducing redundant profile requests by 30%.",
+      "Built a high-throughput data migration service that synchronized real-time data from heterogeneous sources into Elasticsearch at 50K records/minute, enabling zero-downtime migrations and reducing migration-related support tickets to nearly zero.",
+      "Automated shortlist cleanup and listing-expiry notifications with production cron jobs; introduced load testing, dry-run validation, duplicate-send safeguards, and market-specific rollouts, retired legacy workflows, and reduced manual effort by 20%.",
+      "Developed an LLM-powered Node.js upgrade agent that analyzes code for version-specific breaking changes and generates targeted patches, mitigating risks from outdated dependencies.",
+      "Delivered 10+ production fixes across marketplace data synchronization, reverse synchronization, transit location data, privacy-preserving property-location masking, missing API fields, and duplicate validation; removed an obsolete database table holding ~10 GB of data.",
     ],
   },
   {
@@ -99,8 +99,8 @@ export const experience = [
     logoSize: "w-8 h-8",
     tech: ["Java", "gRPC", "Spanner"],
     points: [
-      "Designed and implemented the Hard Bundles framework in the internal product configuration system using Java, gRPC, and Spanner, enabling dependent SKUs to function as a single unit.",
-      "Reduced API calls per quote by 3–5x, improved quoting efficiency by 40%, and enhanced data consistency through versioned bundle timelines and efficient reverse lookups.",
+      "Built Hard Bundles in an internal product-configuration system using Java, gRPC, and Spanner, enabling dependent SKUs to behave as one unit; reduced API calls per quote by 3–5x and improved quoting efficiency by 40%.",
+      "Added versioned bundle timelines and reverse lookups to improve data consistency and simplify configuration debugging.",
     ],
   },
   {
@@ -115,23 +115,98 @@ export const experience = [
     logoSize: "w-11 h-6",
     tech: ["Java", "TypeScript", "AWS CloudWatch"],
     points: [
-      "Enhanced observability of the Alexa AACS service by integrating rule-level metrics and CloudWatch dashboards.",
-      "Enabled granular monitoring, reducing incident detection time by 30% and improving service reliability for large-scale Alexa operations.",
+      "Enhanced Alexa AACS observability with rule-level metrics and AWS CloudWatch dashboards using Java and TypeScript, reducing incident detection time by 30%.",
+      "Collaborated with software engineers and on-call teams to define service health indicators and alerts for production workloads.",
     ],
   },
 ];
 
 export const projects = [
   {
+    title: "Oracle-MAS — Multi-Agent System",
+    description:
+      "A multi-agent system with an extensible data-source layer, built with LangGraph and FastMCP. Each query is routed to a specialist agent, then grounded with document and web retrieval over AWS Bedrock (Llama 4 Scout), Qdrant, and Tavily.",
+    tech: ["LangGraph", "FastMCP", "AWS Bedrock", "Qdrant", "Tavily"],
+    github: "https://github.com/Pallavibahekar",
+    features: [
+      "LangGraph query routing across specialist agents, including agent-to-agent workflows",
+      "Retrieval tools connected over MCP using FastMCP + MultiServerMCPClient",
+      "Vector search in Qdrant for document QA, Tavily for live web retrieval",
+      "AWS Bedrock (Llama 4 Scout) as the reasoning model for every agent",
+    ],
+    color: "from-violet-500 to-fuchsia-500",
+    badge: "Multi-Agent AI",
+    aiSnippet: {
+      language: "python",
+      code: `from langgraph.graph import StateGraph, START, END
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+# 1. Discover retrieval tools exposed by FastMCP servers
+client = MultiServerMCPClient({
+    "docs": {"url": "http://localhost:8000/mcp", "transport": "streamable_http"},
+    "web":  {"url": "http://localhost:8001/mcp", "transport": "streamable_http"},
+})
+tools = await client.get_tools()
+
+# 2. Wire the router -> specialists -> synthesis loop
+graph = StateGraph(AgentState)
+graph.add_node("router", route_query)         # picks docs / web / both
+graph.add_node("retrieve", retrieve_context)  # Qdrant + Tavily
+graph.add_node("answer", synthesize_answer)   # Bedrock · Llama 4 Scout
+
+graph.add_edge(START, "router")
+graph.add_conditional_edges("router", pick_agents)
+graph.add_edge("retrieve", "answer")
+graph.add_edge("answer", END)
+
+app = graph.compile()`,
+      explanation:
+        "The orchestration layer of Oracle-MAS. A LangGraph router classifies the question and dispatches it to the right specialist agent, so a policy question hits the document agent while a current-events question goes to web search. Retrieval tools are plain MCP servers built with FastMCP, which means a new data source can be plugged in — a fresh Qdrant collection, a new internal API — without touching the graph. Shared state is passed agent-to-agent, and Bedrock's Llama 4 Scout generates the final grounded answer.",
+    },
+  },
+  {
+    title: "Dev-Link-Hub",
+    description:
+      "A full-stack resource manager for developer links, built with React, Node.js, and MongoDB. Users sign in with JWT auth, save and search resources, and every entry is auto-tagged from its title, description, and URL.",
+    tech: ["React", "Node.js", "MongoDB", "JWT", "REST APIs"],
+    github: "https://github.com/Pallavibahekar",
+    features: [
+      "JWT authentication with bcrypt password hashing",
+      "REST APIs for creating, editing, searching, and filtering resources",
+      "Keyword-based auto-tagging to keep saved links organized",
+      "Responsive React UI with search and tag filters",
+    ],
+    color: "from-emerald-500 to-cyan-500",
+    badge: "Full-Stack",
+    aiSnippet: {
+      language: "javascript",
+      code: `// Keyword-based auto-tagging for saved resources
+const TAG_RULES = {
+  react: "frontend",
+  node: "backend",
+  mongo: "database",
+  jwt: "auth",
+  docker: "devops",
+};
+
+export function autoTag(title, description, url) {
+  const text = [title, description, url].join(" ").toLowerCase();
+
+  const tags = Object.entries(TAG_RULES)
+    .filter(([keyword]) => text.includes(keyword))
+    .map(([, tag]) => tag);
+
+  return [...new Set(tags)];
+}`,
+      explanation:
+        "Dev-Link-Hub's tagging layer keeps a growing list of saved links navigable without manual effort. Every new resource is normalized into one lowercase string, matched against a keyword-to-tag ruleset, then de-duplicated with a Set. The tags are stored alongside the resource in MongoDB and power the tag chips and filters in the React UI. Scaffolding the REST endpoints and JWT middleware with an AI assistant let me focus on the search and tagging logic.",
+    },
+  },
+  {
     title: "TimeWise — Smart Grocery App",
     description:
       "Cross-platform grocery shopping app built with Flutter & Firebase. I owned the full frontend, Firebase backend integration, and all external API integrations (YouTube Transcript, Edamam, NewsAPI). Features ML-powered shelf life prediction with dynamic pricing — reducing food waste while saving buyers money.",
-    tech: [
-      "Flutter",
-      "Firebase",
-      "Edamam API",
-      "NewsAPI",
-    ],
+    tech: ["Flutter", "Firebase", "Edamam API", "NewsAPI"],
     github: "https://github.com/Pallavibahekar/TimeWise",
     features: [
       "Built Firebase Auth — email/password + Google Sign-In with state management",
@@ -142,6 +217,7 @@ export const projects = [
     color: "from-purple-500 to-pink-500",
     badge: "Flutter + Firebase",
     aiSnippet: {
+      language: "javascript",
       code: `import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -177,9 +253,9 @@ Future<Map<String, dynamic>?> analyzeIngredientNutrition(String ingredient) asyn
   {
     title: "AI-Powered Portfolio",
     description:
-      "A modern, interactive developer portfolio built with React + Vite, featuring an NLP-powered chatbot with TF-IDF scoring, live sentiment analysis demo, and animated UI — built using AI-assisted development.",
-    tech: ["ReactJS", "Vite", "Tailwind CSS", "Framer Motion", "NLP", "TF-IDF"],
-    github: "https://github.com/Pallavibahekar",
+      "A modern, interactive developer portfolio built with React + Vite, featuring an NLP-powered chatbot with TF-IDF scoring, a live sentiment analysis demo, and an animated UI — built using AI-assisted development.",
+    tech: ["React", "Vite", "Tailwind CSS", "Framer Motion", "NLP", "TF-IDF"],
+    github: "https://github.com/Pallavibahekar/Portfolio_updated",
     features: [
       "NLP chatbot with tokenization, stop-word filtering & TF-IDF scoring",
       "Live sentiment analysis demo (keyword-based NLP)",
@@ -190,6 +266,7 @@ Future<Map<String, dynamic>?> analyzeIngredientNutrition(String ingredient) asyn
     color: "from-cyan-500 to-blue-500",
     badge: "AI-Assisted Dev",
     aiSnippet: {
+      language: "javascript",
       code: `// NLP Engine — TF-IDF Intent Scoring
 function nlpGetResponse(input) {
   const tokens = tokenize(input)
@@ -274,7 +351,7 @@ export const chatbotKnowledge = [
   {
     keywords: ["hello", "hi", "hey", "greet", "what can you do", "help"],
     response:
-      "Hey there! 👋 I'm Pallavi's AI assistant. Ask me anything about her:\n• Current job & internships (Google, Amazon)\n• Projects (Timewise, Portfolio)\n• Skills, achievements, education\n• Specific tech like Hard Bundles, AACS, Spanner, CloudWatch!",
+      "Hey there! 👋 I'm Pallavi's AI assistant. Ask me anything about her:\n• Current job & internships (PropertyGuru, Google, Amazon)\n• Projects (Oracle-MAS, Dev-Link-Hub, TimeWise)\n• Skills, achievements, education\n• Specific tech like Elasticsearch, Hard Bundles, AACS, Spanner, CloudWatch!",
   },
 
   // ── Identity / General ─────────────────────────────────────────────────────
@@ -290,7 +367,7 @@ export const chatbotKnowledge = [
       "overview",
     ],
     response:
-      "I'm Pallavi Bahekar's portfolio AI 👋\n\nPallavi is a Software Development Engineer at **PropertyGuru** (Bangalore), with internships at **Google** and **Amazon**. She's a B.Tech CS & AI graduate from IIIT Lucknow (CGPA 8.7), a LeetCode Knight, and a Harvard WEAmplify Scholar!",
+      "I'm Pallavi Bahekar's portfolio AI 👋\n\nPallavi is a Software Development Engineer at **PropertyGuru** (Bangalore), with internships at **Google** and **Amazon**. She's a B.Tech CS & AI graduate from IIIT Lucknow (CGPA 8.7), a LeetCode Knight, and a Harvard WEAmplify Scholar!\n\nHer work spans backend services, high-throughput data migration to Elasticsearch, and LLM-powered developer tooling.",
   },
 
   // ── Projects Overview ─────────────────────────────────────────────────────
@@ -307,7 +384,44 @@ export const chatbotKnowledge = [
       "portfolio projects",
     ],
     response:
-      "**Pallavi's Projects 🚀**\n\n**1. TimeWise — Smart Grocery App**\n   Flutter + Firebase + Python/FastAPI | Final year B.Tech project\n   • Shelf-life based dynamic pricing (ML model)\n   • Health alerts from PDF medical reports\n   • Recipe suggestions via Edamam API + YouTube transcripts\n   • Sentiment analysis on vendor reviews\n\n**2. AI-Powered Portfolio (this website!)**\n   React + Vite + Tailwind + Framer Motion + Gemini 2.0 Flash\n   • Custom TF-IDF NLP engine built from scratch\n   • Gemini API with context-grounded system prompts\n   • Live sentiment analyzer demo\n\nAsk me about **TimeWise** or the **Portfolio** for deeper details!",
+      "**Pallavi's Projects 🚀**\n\n**1. Oracle-MAS — Multi-Agent System**\n   LangGraph + FastMCP + AWS Bedrock (Llama 4 Scout)\n   • LangGraph query routing across specialist agents\n   • MCP retrieval tools: Qdrant documents + Tavily web search\n\n**2. Dev-Link-Hub**\n   React + Node.js + MongoDB\n   • JWT/bcrypt auth, REST APIs, search & filtering\n   • Keyword-based auto-tagging for saved resources\n\n**3. TimeWise — Smart Grocery App** (BTech final year project)\n   Flutter + Firebase + ML shelf-life prediction & dynamic pricing\n\n**4. AI-Powered Portfolio (this website!)**\n   React + Vite + a custom TF-IDF NLP engine\n\nAsk me about **Oracle-MAS**, **Dev-Link-Hub**, **TimeWise**, or the **Portfolio** for deeper details!",
+  },
+  {
+    keywords: [
+      "oracle-mas",
+      "oracle mas",
+      "multi agent",
+      "multi-agent",
+      "langgraph",
+      "fastmcp",
+      "mcp",
+      "qdrant",
+      "tavily",
+      "bedrock",
+      "llama 4",
+      "extensible data sources",
+      "agent workflow",
+      "agent to agent",
+    ],
+    response:
+      "**Oracle-MAS — Multi-Agent System 🤖**\n\nA multi-agent system with an extensible data-source layer. Built with **LangGraph** for orchestration and **FastMCP** for tooling.\n\n**How it works:**\n• A LangGraph router classifies each query and picks the right specialist agent\n• Agents hand shared state to each other (agent-to-agent workflows)\n• Retrieval tools are exposed as MCP servers via FastMCP and loaded with MultiServerMCPClient\n• Qdrant handles document retrieval, Tavily handles live web search\n• AWS Bedrock (Llama 4 Scout) generates the final grounded answer\n\n**Why it matters:** a new data source is just another MCP server — no changes to the routing graph.",
+  },
+  {
+    keywords: [
+      "dev-link-hub",
+      "dev link hub",
+      "devlink",
+      "resource manager",
+      "bookmark manager",
+      "jwt",
+      "bcrypt",
+      "auto tagging",
+      "autotag",
+      "react mongodb project",
+      "full stack project",
+    ],
+    response:
+      "**Dev-Link-Hub 🔗**\n\nA full-stack resource manager for developer links — React + Node.js + MongoDB.\n\n**Features:**\n• JWT authentication with bcrypt password hashing\n• REST APIs for create / edit / delete / search\n• Search and filters by keyword or tag\n• Keyword-based auto-tagging from a resource's title, description, and URL\n\n**Stack:** React, Node.js, Express, MongoDB, JWT\n\nThe auto-tagger normalizes each resource into one string, matches it against a keyword-to-tag ruleset, de-duplicates with a Set, then stores the tags with the document.",
   },
 
   // ── Current Job ────────────────────────────────────────────────────────────
@@ -336,7 +450,53 @@ export const chatbotKnowledge = [
       "pg",
     ],
     response:
-      "Pallavi currently works as a **Software Development Engineer at PropertyGuru** 🏠 (Nov 2025 – Present, Bangalore).\n\nWhat she does:\n• Led migration of the IPP v5 listing detail endpoint from mapper-based to native v5 index — improving data accuracy and performance\n• Implemented optimized cron jobs for automated shortlist maintenance (state-based cleanup + removal of expired listings > 60 days)\n• Stack: NestJS, AWS, Kibana",
+      "Pallavi currently works as a **Software Development Engineer at PropertyGuru** 🏠 (Nov 2025 – Present, Bangalore).\n\nWhat she does:\n• Built a shared, cached profile service unifying agent-profile access across marketplace products — 30% fewer redundant profile requests\n• Built a high-throughput migration service syncing heterogeneous sources into Elasticsearch at **50K records/minute** with zero-downtime migrations\n• Automated shortlist cleanup and listing-expiry notifications with production cron jobs (load testing, dry-run validation, duplicate-send safeguards) — 20% less manual effort\n• Built an LLM-powered Node.js upgrade agent that detects breaking changes and generates targeted patches\n• Delivered 10+ production fixes and removed an obsolete ~10 GB table\n• Stack: Node.js, Elasticsearch, AWS, CloudWatch",
+  },
+  {
+    keywords: [
+      "elasticsearch",
+      "50k",
+      "50k records",
+      "data migration",
+      "migration service",
+      "zero downtime",
+      "zero-downtime",
+      "profile service",
+      "cached profile",
+      "marketplace data",
+      "reverse synchronization",
+    ],
+    response:
+      "**PropertyGuru — profile service & Elasticsearch migration 🏠**\n\n**Shared profile service:**\n• One cached service exposes agent-profile data to every marketplace product\n• Removed duplicate integrations and cut redundant profile requests by **30%**\n\n**High-throughput migration service:**\n• Streams real-time data from heterogeneous sources into **Elasticsearch**\n• Sustains **50K records/minute**\n• Parallel runs + validation enable **zero-downtime** migrations\n• Migration-related support tickets dropped to nearly zero\n\nShe also worked on reverse synchronization, transit location data, privacy-preserving property-location masking, and duplicate validation.",
+  },
+  {
+    keywords: [
+      "llm upgrade agent",
+      "upgrade agent",
+      "node upgrade",
+      "node.js upgrade",
+      "breaking changes",
+      "dependency upgrade",
+      "outdated dependencies",
+      "patch generation",
+    ],
+    response:
+      "**LLM-powered Node.js upgrade agent (PropertyGuru) 🤖**\n\nProblem: upgrading Node.js across services means hunting version-specific breaking changes by hand.\n\nPallavi built an agent that:\n• Analyzes the codebase for APIs affected by a target Node.js version\n• Uses an LLM to explain the version-specific breaking changes it finds\n• Generates targeted patches instead of blind dependency bumps\n• Keeps upgrades reviewable, so engineers stay in control of the diff\n\nResult: safer upgrades and less exposure to outdated dependencies.",
+  },
+  {
+    keywords: [
+      "cron",
+      "cron job",
+      "shortlist",
+      "listing expiry",
+      "expiry notification",
+      "duplicate send",
+      "dry run",
+      "load testing",
+      "manual effort",
+    ],
+    response:
+      "**PropertyGuru — automated shortlist & expiry workflows ⚙️**\n\nPallavi automated two recurring marketplace workflows with production cron jobs:\n• Shortlist cleanup based on listing state\n• Listing-expiry notifications\n\n**Safety measures she added:**\n• Load testing before rollout\n• Dry-run validation of every batch\n• Duplicate-send safeguards\n• Market-specific rollouts\n\nShe then retired the legacy workflows — reducing manual effort by **20%**.",
   },
 
   // ── Google Internship ──────────────────────────────────────────────────────
@@ -853,7 +1013,7 @@ export const chatbotKnowledge = [
       "what is she passionate about",
     ],
     response:
-      "**Pallavi's Interests in Technology 💡**\n\n• 🌐 **Web Development** — Full-stack development (ReactJS, NestJS, NodeJS)\n• 🏆 **Competitive Programming** — LeetCode Knight, CodeChef 3-Star, 1000+ problems solved\n• 🤖 **Machine Learning** — Transfer learning, NLP, model deployment (TimeWise project)\n• 🧠 **NLP / AI** — Built custom TF-IDF engine, Gemini API integration for this portfolio\n\nShe's particularly passionate about combining AI with real-world product engineering.",
+      "**Pallavi's Interests in Technology 💡**\n\n• 🧱 **Backend Engineering** — Node.js services, gRPC, REST APIs, caching\n• 🌐 **Distributed Systems** — Elasticsearch at 50K records/min, Spanner, zero-downtime migrations\n• 🤖 **LLM Applications** — LangGraph multi-agent systems, MCP tooling, Bedrock\n• 🏆 **Competitive Programming** — LeetCode Knight, CodeChef 3-Star, 1000+ problems solved\n\nShe likes combining AI with real-world product engineering.",
   },
 
   // ── Cloud & Monitoring Tools ───────────────────────────────────────────────
@@ -874,7 +1034,7 @@ export const chatbotKnowledge = [
       "database tools",
     ],
     response:
-      "**Cloud & Monitoring Tools Pallavi has used:**\n\n☁️ **AWS CloudWatch** — Metrics dashboards + alarms at Amazon (AACS rule metrics)\n📊 **Kibana** — Log monitoring + observability at PropertyGuru\n🌍 **Google Cloud Spanner** — Globally distributed SQL DB at Google (Hard Bundles)\n🔥 **Firebase / Firestore** — Real-time database + auth for TimeWise\n🖥️ **AWS (general)** — Cloud infrastructure at PropertyGuru\n\nFull tools list: Git, MySQL, MongoDB, AWS, Kibana, gRPC, Spanner, Firebase, Unix",
+      "**Cloud & Data Tools Pallavi has used:**\n\n🔎 **Elasticsearch** — High-throughput search + data migration at PropertyGuru\n☁️ **AWS CloudWatch** — Rule-level metrics, dashboards, and alarms at Amazon\n🌍 **Google Cloud Spanner** — Globally distributed SQL database for Hard Bundles at Google\n🧠 **AWS Bedrock** — Llama 4 Scout reasoning for Oracle-MAS\n📦 **Qdrant** — Vector search for document retrieval\n🛠️ **MySQL / MongoDB** — Relational and document stores across projects\n\nFull stack: Elasticsearch, MySQL, MongoDB, Spanner, Qdrant, AWS Bedrock, CloudWatch.",
   },
 
   // ── Soft Skills ────────────────────────────────────────────────────────────
@@ -910,7 +1070,7 @@ export const chatbotKnowledge = [
       "all skills",
     ],
     response:
-      "**Pallavi's Full Tech Stack:**\n\n🔷 **Languages:** Java, Python, C, C++, JavaScript, SQL\n⚛️ **Frameworks:** ReactJS, NodeJS, NestJS, Flutter, Bootstrap\n🛠️ **Tools:** Git, MySQL, MongoDB, AWS, Kibana, gRPC, Spanner, Firebase, Unix\n\n💡 **Interests:** Web Dev, Competitive Programming, Machine Learning, NLP\n\nBy company:\n• PropertyGuru → NestJS, AWS, Kibana\n• Google → Java, gRPC, Spanner\n• Amazon → Java, TypeScript, CloudWatch",
+      "**Pallavi's Full Tech Stack:**\n\n🔷 **Languages:** Java, C++, C, JavaScript, SQL, Python\n⚛️ **Backend / Frameworks:** Node.js, React, gRPC, REST APIs, LangGraph, FastMCP\n🗄️ **Databases / Cloud:** Elasticsearch, MySQL, MongoDB, Spanner, Qdrant, AWS Bedrock, CloudWatch\n🧠 **Core Concepts:** DSA, DBMS, OOP, Computer Networks\n\nBy company:\n• PropertyGuru → Node.js, Elasticsearch, AWS\n• Google → Java, gRPC, Spanner\n• Amazon → Java, TypeScript, CloudWatch\n• Projects → LangGraph, FastMCP, Qdrant, Bedrock",
   },
 
   // ── Education: Degree ─────────────────────────────────────────────────────
@@ -1173,7 +1333,7 @@ export const chatbotKnowledge = [
       "how to reach",
     ],
     response:
-      "**Contact Pallavi:**\n\n📧 bahekarpallavi883@gmail.com\n💼 linkedin.com/in/pallavibahekar\n🐙 github.com/Pallavibahekar\n🧩 LeetCode: pal_2103\n🍳 CodeChef: pal_krish\n📱 +91-957-9501-024",
+      "**Contact Pallavi:**\n\n📧 pallavibahekar34@gmail.com\n💼 linkedin.com/in/pallavi-bahekar-9b904922a\n🐙 github.com/Pallavibahekar\n🧩 LeetCode: pal_2103\n🍳 CodeChef: pal_krish\n📱 +91-957-9501-024",
   },
 
   // ── Extracurricular / POR ─────────────────────────────────────────────────
@@ -1216,7 +1376,7 @@ export const chatbotKnowledge = [
       "general knowledge",
     ],
     response:
-      "I'm Pallavi's **portfolio-specific** AI — I only know about Pallavi! 😊\n\nI can answer questions about:\n• 💼 Her experience at Google, Amazon, PropertyGuru\n• 🚀 Her projects (TimeWise, this Portfolio)\n• 🏆 Her achievements (LeetCode Knight, GHC Scholar, Harvard)\n• 🎓 Her education at IIIT Lucknow\n• 🛠️ Her tech skills and interests\n\nFor general questions, try Google — I'm just a portfolio bot!",
+      "I'm Pallavi's **portfolio-specific** AI — I only know about Pallavi! 😊\n\nI can answer questions about:\n• 💼 Her experience at PropertyGuru, Google, Amazon\n• 🚀 Her projects (Oracle-MAS, Dev-Link-Hub, TimeWise, this Portfolio)\n• 🏆 Her achievements (LeetCode Knight, GHC Scholar, Harvard)\n• 🎓 Her education at IIIT Lucknow\n• 🛠️ Her tech skills and interests\n\nFor general questions, try Google — I'm just a portfolio bot!",
   },
 
   // ── Experience overview ────────────────────────────────────────────────────
@@ -1229,6 +1389,6 @@ export const chatbotKnowledge = [
       "career",
     ],
     response:
-      "**Pallavi's Experience:**\n\n🟢 **PropertyGuru** — SDE (Nov 2025–Present)\n   NestJS, AWS, Kibana | IPP v5 migration, cron jobs\n\n🔵 **Google** — SDE Intern (Jan–July 2025)\n   Java, gRPC, Spanner | Hard Bundles framework\n\n🟠 **Amazon** — SDE Intern (May–July 2024)\n   Java, TypeScript, CloudWatch | Alexa AACS rule metrics\n\nAsk me about any specific company for deeper details!",
+      "**Pallavi's Experience:**\n\n🟢 **PropertyGuru** — SDE (Nov 2025–Present)\n   Node.js, Elasticsearch, AWS | profile service, 50K rec/min migration, LLM upgrade agent\n\n🔵 **Google** — SDE Intern (Jan–July 2025)\n   Java, gRPC, Spanner | Hard Bundles framework\n\n🟠 **Amazon** — SDE Intern (May–July 2024)\n   Java, TypeScript, CloudWatch | Alexa AACS rule metrics\n\nAsk me about any specific company for deeper details!",
   },
 ];

@@ -29,9 +29,9 @@ const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
 
 const roles = [
   "Software Development Engineer",
-  "Full-Stack Developer",
+  "Backend Engineer",
+  "AI & LLM Enthusiast",
   "Competitive Coder",
-  "Machine Learning Enthusiast",
 ];
 
 function TypeWriter({ texts }) {

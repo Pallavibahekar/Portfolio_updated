@@ -1,5 +1,6 @@
 import { FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
 import { SiLeetcode, SiCodechef } from "react-icons/si";
+import { personalInfo } from "../data/portfolioData";
 
 export default function Footer() {
   return (
@@ -11,11 +12,11 @@ export default function Footer() {
 
         <div className="flex items-center gap-5">
           {[
-            { icon: <FiGithub size={18} />, href: "https://github.com/Pallavibahekar", label: "GitHub" },
-            { icon: <FiLinkedin size={18} />, href: "https://linkedin.com/in/pallavibahekar", label: "LinkedIn" },
-            { icon: <FiMail size={18} />, href: "mailto:bahekarpallavi883@gmail.com", label: "Email" },
-            { icon: <SiLeetcode size={18} />, href: "https://leetcode.com/pal_2103", label: "LeetCode" },
-            { icon: <SiCodechef size={18} />, href: "https://www.codechef.com/users/pal_krish", label: "CodeChef" },
+            { icon: <FiGithub size={18} />, href: personalInfo.github, label: "GitHub" },
+            { icon: <FiLinkedin size={18} />, href: personalInfo.linkedin, label: "LinkedIn" },
+            { icon: <FiMail size={18} />, href: `mailto:${personalInfo.email}`, label: "Email" },
+            { icon: <SiLeetcode size={18} />, href: personalInfo.leetcode, label: "LeetCode" },
+            { icon: <SiCodechef size={18} />, href: personalInfo.codechef, label: "CodeChef" },
           ].map((item) => (
             <a
               key={item.label}
